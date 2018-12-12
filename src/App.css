@@ -1,6 +1,113 @@
 .App {
   text-align: center;
+  color: rgb(224, 199, 183);
 }
+
+div,
+input,
+button,
+h1,
+form {
+  position: relative;
+  color: white;
+  min-width: 20rem;
+  max-width: 80%;
+  min-height: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  margin: 0.5rem auto 0.5rem auto;
+  box-shadow: 3px 5px 8px 3px rgba(0, 0, 0, 0.267);
+  box-sizing: border-box;
+}
+
+h1 > p {
+  font-size: 1rem;
+  color: rgb(48, 80, 90);
+  text-shadow: none;
+}
+
+h1 {
+  text-align: center;
+  min-width: fit-content;
+  margin: auto;
+  margin-bottom: 2rem;
+}
+
+form {
+  border-style: none;
+  max-width: fit-content;
+  margin: auto;
+  margin-bottom: 1rem;
+}
+
+button {
+  position: relative;
+  color: black;
+  min-width: fit-content;
+  float: right;
+}
+
+div > button {
+  right: 0;
+  top: -0.15rem;
+  min-width: 1.5rem;
+  max-height: 1.5rem;
+  min-height: 1.5rem;
+  padding: 0;
+  margin: 0 0 0 0.4rem;
+}
+
+h1 {
+  color: rgb(72, 158, 216);
+  text-shadow: 4px 5px 6px rgba(0, 0, 0, 0.467);
+  border-style: none;
+}
+
+div div {
+  border-style: none;
+  margin: auto;
+  margin-bottom: 0.8rem;
+  max-width: 30rem;
+  background: linear-gradient(
+    to top right,
+    rgb(215, 210, 216),
+    rgb(177, 210, 216)
+  );
+  color: black;
+}
+
+input {
+  background-color: rgba(211, 211, 143, 0.479);
+  color: black;
+  outline: none;
+  margin-right: 0.5rem;
+}
+
+input:focus,
+input:hover {
+  border-style: 1px solid red;
+  background: rgb(223, 222, 179);
+}
+
+button:hover {
+  background-color: darkgrey;
+}
+
+*:focus {
+  outline: none;
+}
+
+*:hover {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+/* shadow parameters: offset-x offset-y blur-radius spread-radius color */
+/* text-shadow parameters: offset-x offset-y blur-radius color */
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
@@ -8,7 +115,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background: linear-gradient(red, orange);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -29,4 +136,41 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.about-dialog {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  z-index: 2;
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.767);
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 20rem;
+  min-height: 30rem;
+  background-color: white;
+  color: white;
+  transform: translate(-50%, -50%);
+}
+
+body {
+  background: linear-gradient(
+    to top right,
+    rgb(148, 95, 161),
+    rgb(62, 129, 141)
+  );
+  min-height: calc(100vh - 1rem);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
 }
