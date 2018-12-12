@@ -1,4 +1,4 @@
-### Available on CodeSanbox
+### Available to run on CodeSanbox
 https://14nrmx4n63.codesandbox.io/
 
 Checkout the course at https://egghead.io/lessons/react-write-custom-hooks-to-share-logic-between-react-function-components
