@@ -1,3 +1,6 @@
+Checkout the course at https://egghead.io/lessons/react-write-custom-hooks-to-share-logic-between-react-function-components
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
