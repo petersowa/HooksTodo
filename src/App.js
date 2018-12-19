@@ -95,7 +95,7 @@ export default function App() {
         <p>Test of using React Hooks for state management</p>
       </h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="group">
         <input type="text" name="todoContent" />
         <button type="submit">
           <i className="fas fa-plus" />

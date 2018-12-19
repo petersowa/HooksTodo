@@ -10,7 +10,8 @@ h1,
 form {
   position: relative;
   color: white;
-  min-width: 20rem;
+  min-width: min-content;
+  width: auto;
   max-width: 80%;
   min-height: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.13);
@@ -36,7 +37,7 @@ h1 {
 
 form {
   border-style: none;
-  max-width: fit-content;
+  max-width: auto;
   margin: auto;
   margin-bottom: 1rem;
 }
@@ -46,6 +47,12 @@ button {
   color: black;
   min-width: fit-content;
   float: right;
+}
+
+.group:after {
+  content: '';
+  display: table;
+  clear: both;
 }
 
 div > button {
@@ -68,7 +75,8 @@ div div {
   border-style: none;
   margin: auto;
   margin-bottom: 0.8rem;
-  max-width: 30rem;
+  max-width: 40rem;
+  min-width: 15rem;
   background: linear-gradient(
     to top right,
     rgb(215, 210, 216),
@@ -82,6 +90,7 @@ input {
   color: black;
   outline: none;
   margin-right: 0.5rem;
+  width: 100%;
 }
 
 input:focus,
