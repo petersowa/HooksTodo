@@ -36,10 +36,12 @@ h1 {
 }
 
 form {
+  display: flex;
   border-style: none;
   max-width: auto;
   margin: auto;
   margin-bottom: 1rem;
+  background-color: rgba(66, 199, 99, 0.096);
 }
 
 button {
@@ -69,9 +71,10 @@ h1 {
   color: rgb(72, 158, 216);
   text-shadow: 4px 5px 6px rgba(0, 0, 0, 0.467);
   border-style: none;
+  background-color: rgba(66, 199, 99, 0.096);
 }
 
-div div {
+div div div {
   border-style: none;
   margin: auto;
   margin-bottom: 0.8rem;
@@ -85,12 +88,19 @@ div div {
   color: black;
 }
 
+form + div {
+  background-color: rgba(66, 199, 99, 0.096);
+  max-width: 100%;
+  width: 80%;
+}
+
 input {
-  background-color: rgba(211, 211, 143, 0.479);
+  background-color: rgba(66, 199, 99, 0.253);
   color: black;
   outline: none;
   margin-right: 0.5rem;
   width: 100%;
+  max-width: 100%;
 }
 
 input:focus,

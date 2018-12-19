@@ -117,7 +117,7 @@ export default function App() {
 
 const TodoList = ({ items, handleDone, handleDelete }) => {
   return (
-    <React.Fragment>
+    <div>
       {items.map(item => (
         <div key={item.id}>
           <span style={Styles.done(item.done)}>{item.content}</span>
@@ -129,6 +129,6 @@ const TodoList = ({ items, handleDone, handleDelete }) => {
           </button>
         </div>
       ))}
-    </React.Fragment>
+    </div>
   );
 };
