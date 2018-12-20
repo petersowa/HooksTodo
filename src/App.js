@@ -1,4 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useReducer,
+  useContext,
+  useMemo,
+} from 'react';
 import './App.css';
 
 const useDocumentTitle = title => {
@@ -30,6 +36,7 @@ const useKeyDown = (keyToMatch, defaultValue) => {
 };
 
 const useLocalStorage = (key, defaultValue) => {
+  console.log(key, defaultValue);
   const initialValue = () => {
     const valueFromStorage = JSON.parse(
       localStorage.getItem(key) || JSON.stringify(defaultValue)
@@ -55,14 +62,70 @@ const Styles = {
       : {},
 };
 
+const Context = React.createContext();
+
+const useTodosWithStorage = defaultValue => {
+  const initialValue = () =>
+    JSON.parse(localStorage.getItem('todos') || JSON.stringify(defaultValue));
+  const [Todos, dispatch] = useReducer((state, action) => {
+    switch (action.type) {
+      case 'ADD_TODO':
+        return [
+          ...state,
+          {
+            content: action.content,
+            id: Date.now(),
+          },
+        ];
+      case 'DELETE_TODO':
+        setTimeout(() => dispatch({ type: 'CLEANUP' }), 900);
+        return state.map(item =>
+          item.id !== action.id ? item : { ...item, delete: true }
+        );
+      case 'TOGGLE_TODO':
+        return state.map(item =>
+          action.id !== item.id ? item : { ...item, done: !item.done }
+        );
+      case 'CLEANUP':
+        return state.filter(item => item.delete !== true);
+      default:
+        return state;
+    }
+  }, useMemo(initialValue, []));
+  useEffect(
+    () => {
+      localStorage.setItem('todos', JSON.stringify(Todos));
+    },
+    [Todos]
+  );
+  return [Todos, dispatch];
+};
+
 export default function App() {
-  const [Todos, setTodo] = useLocalStorage('todos', [
+  // const [Todos, setTodo] = useLocalStorage('todos', [
+  //   { id: 1, content: 'go to park', done: false, delete: false },
+  //   { id: 2, content: 'buy a car', done: true, delete: false },
+  //   { id: 3, content: 'help others', done: false, delete: false },
+  // ]);
+  const [Todos, dispatch] = useTodosWithStorage([
     { id: 1, content: 'go to park', done: false, delete: false },
     { id: 2, content: 'buy a car', done: true, delete: false },
     { id: 3, content: 'help others', done: false, delete: false },
   ]);
 
-  useDocumentTitle(`Todos, ${Todos.length}`);
+  const [Columns, setColumns] = useLocalStorage('columns', [
+    { id: 'todo', title: 'To Do', items: [] },
+    { id: 'in_progress', title: 'In Progress', items: [] },
+    { id: 'done', title: 'Done', items: [] },
+  ]);
+
+  const [ColumnOrder, setColumnOrder] = useLocalStorage('column_order', [
+    'todo',
+    'in_progress',
+    'done',
+  ]);
+
+  useDocumentTitle(`Todos, ${Todos.length || '0'}`);
   const [showAbout, setShowAbout] = useKeyDown('?', false);
   //const [showTime, setShowAbout] = useKeyDown('?', false);
 
@@ -70,34 +133,20 @@ export default function App() {
     event.preventDefault();
     const { value } = event.target.todoContent;
     if (value) {
-      setTodo([
-        { content: event.target.todoContent.value, id: Date.now() },
-        ...Todos,
-      ]);
+      dispatch({ type: 'ADD_TODO', content: event.target.todoContent.value });
       event.target.todoContent.value = '';
     }
   };
 
   const handleDone = id => () => {
-    const updateTodo = Todos.find(item => item.id === id);
-    updateTodo.done = !updateTodo.done;
-    setTodo([...Todos]);
+    dispatch({ type: 'TOGGLE_TODO', id });
   };
 
   const handleDelete = id => {
-    setTodo(
-      Todos.map(item => (item.id !== id ? item : { ...item, delete: true }))
-    );
-  };
-
-  const cleanupItems = () => {
-    if (Todos.find(item => item.delete === true)) {
-      setTodo(Todos.filter(item => item.delete !== true));
-    }
+    dispatch({ type: 'DELETE_TODO', id });
   };
 
   console.log('render list');
-  setTimeout(cleanupItems, 900);
 
   return (
     <React.Fragment>
@@ -150,5 +199,13 @@ const TodoItem = ({ item, handleDone, handleDelete }) => {
 const TodoList = ({ items, handleDone, handleDelete }) => {
   return (
     <div>{items.map(item => TodoItem({ item, handleDone, handleDelete }))}</div>
+  );
+};
+
+const Columns = ({ columns }) => {
+  return (
+    <div className="columns">
+      {columns.map(column => TodoList(column.items))}
+    </div>
   );
 };
