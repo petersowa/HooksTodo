@@ -209,6 +209,7 @@ body {
 
 @keyframes rotateIn {
   from {
+    transform: rotateY(90deg) scale(0);
     max-height: 0;
     min-height: 0;
     margin-top: 0;
@@ -218,16 +219,16 @@ body {
     overflow: hidden;
   }
   to {
-    max-height: 5rem;
+    transform: rotateY(0deg) scale(1);
   }
 }
 
 @keyframes rotateOut {
   from {
-    transform: rotateX(0deg) scale(1);
+    transform: rotateY(0deg) scale(1);
   }
   to {
-    transform: rotateX(90deg) scale(0);
+    transform: rotateY(90deg) scale(0);
     max-height: 0;
     min-height: 0;
     margin-top: 0;
