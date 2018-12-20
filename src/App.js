@@ -57,9 +57,9 @@ const Styles = {
 
 export default function App() {
   const [Todos, setTodo] = useLocalStorage('todos', [
-    { id: 1, content: 'go to park', done: false },
-    { id: 2, content: 'buy a car', done: true },
-    { id: 3, content: 'help others', done: false },
+    { id: 1, content: 'go to park', done: false, delete: false },
+    { id: 2, content: 'buy a car', done: true, delete: false },
+    { id: 3, content: 'help others', done: false, delete: false },
   ]);
 
   useDocumentTitle(`Todos, ${Todos.length}`);
@@ -84,9 +84,20 @@ export default function App() {
     setTodo([...Todos]);
   };
 
-  const handleDelete = id => () => {
-    setTodo(Todos.filter(item => item.id !== id));
+  const handleDelete = id => {
+    setTodo(
+      Todos.map(item => (item.id !== id ? item : { ...item, delete: true }))
+    );
   };
+
+  const cleanupItems = () => {
+    if (Todos.find(item => item.delete === true)) {
+      setTodo(Todos.filter(item => item.delete !== true));
+    }
+  };
+
+  console.log('render list');
+  setTimeout(cleanupItems, 900);
 
   return (
     <React.Fragment>
@@ -115,20 +126,29 @@ export default function App() {
   );
 }
 
+const TodoItem = ({ item, handleDone, handleDelete }) => {
+  const deleteItem = id => () => {
+    //setTimeout(() => handleDelete(id), 900);
+    //console.log('call handle delete for ', id);
+    handleDelete(id);
+  };
+
+  console.log('render item');
+  return (
+    <div className={!item.delete ? 'show' : 'hide'} key={item.id}>
+      <span style={Styles.done(item.done)}>{item.content}</span>
+      <button onClick={deleteItem(item.id)}>
+        <i className="fas fa-trash-alt" />
+      </button>
+      <button onClick={handleDone(item.id)}>
+        <i className="fas fa-check" />
+      </button>
+    </div>
+  );
+};
+
 const TodoList = ({ items, handleDone, handleDelete }) => {
   return (
-    <div>
-      {items.map(item => (
-        <div key={item.id}>
-          <span style={Styles.done(item.done)}>{item.content}</span>
-          <button onClick={handleDelete(item.id)}>
-            <i className="fas fa-trash-alt" />
-          </button>
-          <button onClick={handleDone(item.id)}>
-            <i className="fas fa-check" />
-          </button>
-        </div>
-      ))}
-    </div>
+    <div>{items.map(item => TodoItem({ item, handleDone, handleDelete }))}</div>
   );
 };

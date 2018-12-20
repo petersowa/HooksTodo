@@ -86,12 +86,25 @@ div div div {
     rgb(177, 210, 216)
   );
   color: black;
+  box-sizing: border-box;
+}
+
+.show {
+  animation: 0.8s ease-in rotateIn;
+  animation-direction: forwards;
+  animation-fill-mode: forwards;
+}
+
+.hide {
+  animation: 0.8s ease-out rotateOut;
+  animation-fill-mode: forwards;
 }
 
 form + div {
   background-color: rgba(66, 199, 99, 0.096);
   max-width: 100%;
   width: 80%;
+  perspective: 500px;
 }
 
 input {
@@ -192,4 +205,35 @@ body {
   margin: 0;
   padding: 0;
   border: none;
+}
+
+@keyframes rotateIn {
+  from {
+    max-height: 0;
+    min-height: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+  }
+  to {
+    max-height: 5rem;
+  }
+}
+
+@keyframes rotateOut {
+  from {
+    transform: rotateX(0deg) scale(1);
+  }
+  to {
+    transform: rotateX(90deg) scale(0);
+    max-height: 0;
+    min-height: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+  }
 }
