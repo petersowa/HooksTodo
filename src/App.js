@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useReducer,
-  useContext,
-  useMemo,
-} from 'react';
+import React from 'react';
 import './App.css';
 
 import useTodosWithStorage from './hooks/use-todos-with-storage';
@@ -29,14 +23,22 @@ export default function App() {
   //   { id: 2, content: 'buy a car', done: true, delete: false },
   //   { id: 3, content: 'help others', done: false, delete: false },
   // ]);
-  const [Todos, dispatch] = useTodosWithStorage([
+  const [Todos, actions] = useTodosWithStorage([
     { id: 1, content: 'go to park', done: false, delete: false },
     { id: 2, content: 'buy a car', done: true, delete: false },
     { id: 3, content: 'help others', done: false, delete: false },
   ]);
 
   const [Columns, setColumns] = useLocalStorage('columns', [
-    { id: 'todo', title: 'To Do', items: [] },
+    {
+      id: 'todo',
+      title: 'To Do',
+      items: [
+        { id: 1, content: 'go to park', done: false, delete: false },
+        { id: 2, content: 'buy a car', done: true, delete: false },
+        { id: 3, content: 'help others', done: false, delete: false },
+      ],
+    },
     { id: 'in_progress', title: 'In Progress', items: [] },
     { id: 'done', title: 'Done', items: [] },
   ]);
@@ -55,18 +57,15 @@ export default function App() {
     event.preventDefault();
     const { value } = event.target.todoContent;
     if (value) {
-      dispatch({ type: 'ADD_TODO', content: event.target.todoContent.value });
+      actions.addTodo(event.target.todoContent.value);
+      //dispatch({ type: 'ADD_TODO', content: event.target.todoContent.value });
       event.target.todoContent.value = '';
     }
   };
 
-  const handleDone = id => () => {
-    dispatch({ type: 'TOGGLE_TODO', id });
-  };
+  const handleDone = id => () => actions.toggleTodo(id);
 
-  const handleDelete = id => {
-    dispatch({ type: 'DELETE_TODO', id });
-  };
+  const handleDelete = id => () => actions.deleteTodo(id);
 
   console.log('render list');
 
@@ -98,17 +97,11 @@ export default function App() {
 }
 
 const TodoItem = ({ item, handleDone, handleDelete }) => {
-  const deleteItem = id => () => {
-    //setTimeout(() => handleDelete(id), 900);
-    //console.log('call handle delete for ', id);
-    handleDelete(id);
-  };
-
   console.log('render item');
   return (
     <div className={!item.delete ? 'show' : 'hide'} key={item.id}>
       <span style={Styles.done(item.done)}>{item.content}</span>
-      <button onClick={deleteItem(item.id)}>
+      <button onClick={handleDelete(item.id)}>
         <i className="fas fa-trash-alt" />
       </button>
       <button onClick={handleDone(item.id)}>
