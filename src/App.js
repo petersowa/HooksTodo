@@ -82,6 +82,7 @@ export default function App() {
           <i className="fas fa-plus" />
         </button>
       </form>
+
       <TodoList
         items={Todos}
         handleDone={handleDone}
@@ -98,8 +99,28 @@ export default function App() {
 
 const TodoItem = ({ item, handleDone, handleDelete }) => {
   console.log('render item');
+  const onDragStart = (event, id) => {
+    //console.log(id);
+    event.dataTransfer.setData('application/todo-id', id);
+  };
   return (
-    <div className={!item.delete ? 'show' : 'hide'} key={item.id}>
+    <div
+      draggable
+      className={(!item.delete ? 'show' : 'hide') + ' items'}
+      key={item.id}
+      onDragStart={event => onDragStart(event, item.id)}
+      onDragOver={event => {
+        event.preventDefault();
+        console.log(event.nativeEvent.offsetY);
+        const id = event.dataTransfer.getData('application/todo-id');
+        console.log(JSON.stringify(id, null, 2));
+      }}
+      onDrop={event => {
+        event.preventDefault();
+        const id = event.dataTransfer.getData('application/todo-id');
+        console.log(JSON.stringify(id, null, 2));
+      }}
+    >
       <span style={Styles.done(item.done)}>{item.content}</span>
       <button onClick={handleDelete(item.id)}>
         <i className="fas fa-trash-alt" />

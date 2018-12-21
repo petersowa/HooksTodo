@@ -25,6 +25,12 @@ const useTodosWithStorage = defaultValue => {
         return state.map(item =>
           action.id !== item.id ? item : { ...item, done: !item.done }
         );
+      case 'ORDER_TODO':
+        const { id, pos } = action;
+        const moveItem = state.find(item => item.id === id);
+        return state
+          .filter(item => id !== item.id)
+          .map((item, index) => (pos !== index ? item : moveItem));
       case 'CLEANUP':
         return state.filter(item => item.delete !== true);
       default:
@@ -35,8 +41,9 @@ const useTodosWithStorage = defaultValue => {
   const addTodo = content => dispatch({ type: 'ADD_TODO', content });
   const toggleTodo = id => dispatch({ type: 'TOGGLE_TODO', id });
   const deleteTodo = id => dispatch({ type: 'DELETE_TODO', id });
+  const orderTodos = (id, pos) => dispatch({ type: 'ORDER_TODO', id, pos });
   //const cleanup = () => dispatch({ type: 'CLEANUP' });
-  const actions = { addTodo, toggleTodo, deleteTodo };
+  const actions = { addTodo, toggleTodo, deleteTodo, orderTodos };
 
   // Save changes to local storage
   useEffect(
