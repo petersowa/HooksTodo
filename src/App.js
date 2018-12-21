@@ -7,51 +7,10 @@ import React, {
 } from 'react';
 import './App.css';
 
-const useDocumentTitle = title => {
-  useEffect(
-    () => {
-      document.title = title;
-    },
-    [title]
-  );
-};
-
-const useKeyDown = (keyToMatch, defaultValue) => {
-  const [match, setMatch] = useState(defaultValue);
-  useEffect(() => {
-    const handleKey = event => {
-      const { key } = event;
-      if (event.srcElement.localName !== 'input') {
-        if (key === keyToMatch) {
-          setMatch(true);
-        }
-      }
-    };
-    document.addEventListener('keydown', handleKey);
-    return () => {
-      document.removeEventListener('keydown', handleKey);
-    };
-  }, []);
-  return [match, setMatch];
-};
-
-const useLocalStorage = (key, defaultValue) => {
-  console.log(key, defaultValue);
-  const initialValue = () => {
-    const valueFromStorage = JSON.parse(
-      localStorage.getItem(key) || JSON.stringify(defaultValue)
-    );
-    return valueFromStorage;
-  };
-  const [storage, setStorage] = useState(initialValue);
-  useEffect(
-    () => {
-      localStorage.setItem(key, JSON.stringify(storage));
-    },
-    [storage]
-  );
-  return [storage, setStorage];
-};
+import useTodosWithStorage from './hooks/use-todos-with-storage';
+import useKeyDown from './hooks/use-key-down';
+import useLocalStorage from './hooks/use-local-storage';
+import useDocumentTitle from './hooks/use-document-title';
 
 const Styles = {
   done: state =>
@@ -63,43 +22,6 @@ const Styles = {
 };
 
 const Context = React.createContext();
-
-const useTodosWithStorage = defaultValue => {
-  const initialValue = () =>
-    JSON.parse(localStorage.getItem('todos') || JSON.stringify(defaultValue));
-  const [Todos, dispatch] = useReducer((state, action) => {
-    switch (action.type) {
-      case 'ADD_TODO':
-        return [
-          ...state,
-          {
-            content: action.content,
-            id: Date.now(),
-          },
-        ];
-      case 'DELETE_TODO':
-        setTimeout(() => dispatch({ type: 'CLEANUP' }), 900);
-        return state.map(item =>
-          item.id !== action.id ? item : { ...item, delete: true }
-        );
-      case 'TOGGLE_TODO':
-        return state.map(item =>
-          action.id !== item.id ? item : { ...item, done: !item.done }
-        );
-      case 'CLEANUP':
-        return state.filter(item => item.delete !== true);
-      default:
-        return state;
-    }
-  }, useMemo(initialValue, []));
-  useEffect(
-    () => {
-      localStorage.setItem('todos', JSON.stringify(Todos));
-    },
-    [Todos]
-  );
-  return [Todos, dispatch];
-};
 
 export default function App() {
   // const [Todos, setTodo] = useLocalStorage('todos', [
