@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './App.css';
 
 import useTodosWithStorage from './hooks/use-todos-with-storage';
 import useKeyDown from './hooks/use-key-down';
-import useLocalStorage from './hooks/use-local-storage';
+// import useLocalStorage from './hooks/use-local-storage';
 import useDocumentTitle from './hooks/use-document-title';
 
 const Styles = {
@@ -15,7 +15,7 @@ const Styles = {
       : {},
 };
 
-const Context = React.createContext();
+const TodoContext = React.createContext();
 
 export default function App() {
   // const [Todos, setTodo] = useLocalStorage('todos', [
@@ -29,25 +29,25 @@ export default function App() {
     { id: 3, content: 'help others', done: false, delete: false },
   ]);
 
-  const [Columns, setColumns] = useLocalStorage('columns', [
-    {
-      id: 'todo',
-      title: 'To Do',
-      items: [
-        { id: 1, content: 'go to park', done: false, delete: false },
-        { id: 2, content: 'buy a car', done: true, delete: false },
-        { id: 3, content: 'help others', done: false, delete: false },
-      ],
-    },
-    { id: 'in_progress', title: 'In Progress', items: [] },
-    { id: 'done', title: 'Done', items: [] },
-  ]);
+  // const [Columns, setColumns] = useLocalStorage('columns', [
+  //   {
+  //     id: 'todo',
+  //     title: 'To Do',
+  //     items: [
+  //       { id: 1, content: 'go to park', done: false, delete: false },
+  //       { id: 2, content: 'buy a car', done: true, delete: false },
+  //       { id: 3, content: 'help others', done: false, delete: false },
+  //     ],
+  //   },
+  //   { id: 'in_progress', title: 'In Progress', items: [] },
+  //   { id: 'done', title: 'Done', items: [] },
+  // ]);
 
-  const [ColumnOrder, setColumnOrder] = useLocalStorage('column_order', [
-    'todo',
-    'in_progress',
-    'done',
-  ]);
+  // const [ColumnOrder, setColumnOrder] = useLocalStorage('column_order', [
+  //   'todo',
+  //   'in_progress',
+  //   'done',
+  // ]);
 
   useDocumentTitle(`Todos, ${Todos.length || '0'}`);
   const [showAbout, setShowAbout] = useKeyDown('?', false);
@@ -70,7 +70,7 @@ export default function App() {
   console.log('render list');
 
   return (
-    <React.Fragment>
+    <TodoContext.Provider value={actions}>
       <h1>
         List of Todos
         <p>Test of using React Hooks for state management</p>
@@ -93,12 +93,13 @@ export default function App() {
           <div className="modal-content">This is the about dialog.</div>
         </div>
       )}
-    </React.Fragment>
+    </TodoContext.Provider>
   );
 }
 
 const TodoItem = ({ item, handleDone, handleDelete }) => {
   console.log('render item');
+  const actions = useContext(TodoContext);
   const onDragStart = (event, id) => {
     //console.log(id);
     event.dataTransfer.setData('application/todo-id', id);
@@ -118,14 +119,16 @@ const TodoItem = ({ item, handleDone, handleDelete }) => {
       onDrop={event => {
         event.preventDefault();
         const id = event.dataTransfer.getData('application/todo-id');
-        console.log(JSON.stringify(id, null, 2));
+        actions.moveItem(id, item.id);
+        //moveItem(id, item.id)
+        //console.log(id, item.id);
       }}
     >
       <span style={Styles.done(item.done)}>{item.content}</span>
       <button onClick={handleDelete(item.id)}>
         <i className="fas fa-trash-alt" />
       </button>
-      <button onClick={handleDone(item.id)}>
+      <button onClick={() => actions.toggleTodo(item.id)}>
         <i className="fas fa-check" />
       </button>
     </div>
@@ -138,10 +141,10 @@ const TodoList = ({ items, handleDone, handleDelete }) => {
   );
 };
 
-const Columns = ({ columns }) => {
-  return (
-    <div className="columns">
-      {columns.map(column => TodoList(column.items))}
-    </div>
-  );
-};
+// const Columns = ({ columns }) => {
+//   return (
+//     <div className="columns">
+//       {columns.map(column => TodoList(column.items))}
+//     </div>
+//   );
+// };
