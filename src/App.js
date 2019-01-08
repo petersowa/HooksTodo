@@ -19,6 +19,7 @@ const Styles = {
 const TodoContext = React.createContext();
 
 export default function App() {
+  console.log(React.version);
   // const [Todos, setTodo] = useLocalStorage('todos', [
   //   { id: 1, content: 'go to park', done: false, delete: false },
   //   { id: 2, content: 'buy a car', done: true, delete: false },
@@ -143,8 +144,8 @@ const TodoList = ({ items, handleDone, handleDelete }) => {
       items={items}
       keys={item => item.id}
       from={{ opacity: 0, maxHeight: 0 }}
-      enter={{ opacity: 1, maxHeight: '3rem' }}
-      leave={{ opacity: 0, maxHeight: 0 }}
+      enter={{ opacity: 1, maxHeight: 40 }}
+      leave={{ opacity: 0, maxHeight: 0, marginTop: 0, marginBottom: 0 }}
     >
       {item => props => (
         <div style={props}>
