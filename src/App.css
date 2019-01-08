@@ -106,6 +106,7 @@ div div div {
 
 .items {
   border: 1px solid green;
+  overflow: none;
 }
 
 form + div {

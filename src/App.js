@@ -5,6 +5,7 @@ import useTodosWithStorage from './hooks/use-todos-with-storage';
 import useKeyDown from './hooks/use-key-down';
 // import useLocalStorage from './hooks/use-local-storage';
 import useDocumentTitle from './hooks/use-document-title';
+import { Spring, Transition } from 'react-spring';
 
 const Styles = {
   done: state =>
@@ -97,7 +98,7 @@ export default function App() {
   );
 }
 
-const TodoItem = ({ item, handleDone, handleDelete }) => {
+const TodoItem = ({ item, handleDone, handleDelete, style }) => {
   console.log('render item');
   const actions = useContext(TodoContext);
   const onDragStart = (event, id) => {
@@ -106,8 +107,9 @@ const TodoItem = ({ item, handleDone, handleDelete }) => {
   };
   return (
     <div
+      style={style}
       draggable
-      className={(!item.delete ? 'show' : 'hide') + ' items'}
+      className="items"
       key={item.id}
       onDragStart={event => onDragStart(event, item.id)}
       onDragOver={event => {
@@ -137,7 +139,24 @@ const TodoItem = ({ item, handleDone, handleDelete }) => {
 
 const TodoList = ({ items, handleDone, handleDelete }) => {
   return (
-    <div>{items.map(item => TodoItem({ item, handleDone, handleDelete }))}</div>
+    <Transition
+      items={items}
+      keys={item => item.id}
+      from={{ opacity: 0, maxHeight: 0 }}
+      enter={{ opacity: 1, maxHeight: '3rem' }}
+      leave={{ opacity: 0, maxHeight: 0 }}
+    >
+      {item => props => (
+        <div style={props}>
+          <TodoItem
+            style={props}
+            item={item}
+            handleDone={handleDone}
+            handleDelete={handleDelete}
+          />
+        </div>
+      )}
+    </Transition>
   );
 };
 
